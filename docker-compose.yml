@@ -1,0 +1,26 @@
+services:
+  db:
+    container_name: venues_db
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    container_name: venues_api
+    image: etl_assessment
+    build:
+      context: .
+    environment:
+      - PYTHONPATH=/opt/etl_assessment
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
